@@ -84,6 +84,32 @@ public class TurnoService {
         turnoRepo.save(turno);
     }
 
+    public void cancelarTurno(Integer idTurno, String emailUsuario){
+        Turno turno = turnoRepo.findById(idTurno)
+                .orElseThrow(() -> new RuntimeException("Turno no encontrado"));
+
+        User usuario = userRepo.findByEmail(emailUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (!turno.getUser().getId().equals(usuario.getId())) {
+            throw new RuntimeException("No tenés permiso para cancelar este turno.");
+        }
+
+        turno.setEstado("disponible");
+        turno.setUser(null);
+        turno.setFechaReservada(null);
+        turno.setDomicilio(null);
+        turno.setServicio(null);
+        turnoRepo.save(turno);
+    }
+
+    public void completarTurno(Integer idTurno){
+        Turno turno = turnoRepo.findById(idTurno)
+                .orElseThrow(() -> new RuntimeException("Turno no encontrado"));
+
+        turno.setEstado("completado");
+        turnoRepo.save(turno);
+    }
 
     public List<Turno> obtenerTurnosDisponibles() {
         return turnoRepo.findByEstado("disponible");
@@ -93,10 +119,8 @@ public class TurnoService {
         return turnoRepo.findByEstado("reservado");
     }
 
-    public List<Turno> obtenerTurnosCancelados() {
-        return turnoRepo.findByEstado("cancelado");
+    public List<Turno> obtenerTurnosCompletados() {
+        return turnoRepo.findByEstado("completado");
     }
-
-
 
 }

@@ -27,18 +27,34 @@ public class TurnoController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PostMapping("/eliminar/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarTurno(@PathVariable Integer id) {
         turnoService.eliminarTurno(id);
         return ResponseEntity.ok("Turno eliminado correctamente.");
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PostMapping("/rechazar/{id}")
+    @PatchMapping("/rechazar/{id}")
     public ResponseEntity<String> rechazarTurno(@PathVariable Integer id) {
         turnoService.rechazarTurno(id);
         return ResponseEntity.ok("Turno rechazado correctamente.");
     }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PatchMapping("/completado/{id}")
+    public ResponseEntity<String> completarTurno(@PathVariable Integer id) {
+        turnoService.completarTurno(id);
+        return ResponseEntity.ok("Turno completado correctamente.");
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @GetMapping("/completados")
+    public ResponseEntity<List<Turno>> obtenerTurnosCompletados() {
+        return ResponseEntity.ok(turnoService.obtenerTurnosCompletados());
+    }
+
+
+
 
     // endpoints de USUARIOS
 
@@ -58,6 +74,13 @@ public class TurnoController {
         return ResponseEntity.ok(reservado);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PatchMapping("/cancelar/{id}")
+    public ResponseEntity<String> cancelarTurno(@PathVariable Integer id, Principal principal) {
+        turnoService.cancelarTurno(id, principal.getName());
+        return ResponseEntity.ok("Turno cancelado correctamente.");
+    }
+
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/disponibles")
@@ -69,12 +92,6 @@ public class TurnoController {
     @GetMapping("/reservados")
     public ResponseEntity<List<Turno>> obtenerTurnosReservados() {
         return ResponseEntity.ok(turnoService.obtenerTurnosReservados());
-    }
-
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    @GetMapping("/cancelados")
-    public ResponseEntity<List<Turno>> obtenerTurnosCancelados() {
-        return ResponseEntity.ok(turnoService.obtenerTurnosCancelados());
     }
 
 }
