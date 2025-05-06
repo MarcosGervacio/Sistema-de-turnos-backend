@@ -4,12 +4,14 @@ package mg.sdt.controlador;
 import lombok.RequiredArgsConstructor;
 import mg.sdt.modelo.ReservarTurnoRequest;
 import mg.sdt.modelo.Turno;
+import mg.sdt.modelo.TurnoDTO;
 import mg.sdt.servicio.TurnoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -92,6 +94,18 @@ public class TurnoController {
     @GetMapping("/reservados")
     public ResponseEntity<List<Turno>> obtenerTurnosReservados() {
         return ResponseEntity.ok(turnoService.obtenerTurnosReservados());
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @GetMapping("/disponiblesPorFecha")
+    public List<TurnoDTO> obtenerTurnosPorFecha(@RequestParam LocalDate fecha) {
+        return turnoService.obtenerTurnosDisponiblesPorFecha(fecha);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @GetMapping("/fechas")
+    public List<String> obtenerFechasConTurnos() {
+        return turnoService.obtenerFechasConTurnosDisponibles();
     }
 
 }

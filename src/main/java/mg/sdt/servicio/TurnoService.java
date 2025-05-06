@@ -2,6 +2,7 @@ package mg.sdt.servicio;
 
 import mg.sdt.modelo.Servicio;
 import mg.sdt.modelo.Turno;
+import mg.sdt.modelo.TurnoDTO;
 import mg.sdt.modelo.User;
 import mg.sdt.repositorio.ServicioRepository;
 import mg.sdt.repositorio.TurnoRepository;
@@ -9,7 +10,9 @@ import mg.sdt.repositorio.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -122,5 +125,26 @@ public class TurnoService {
     public List<Turno> obtenerTurnosCompletados() {
         return turnoRepo.findByEstado("completado");
     }
+
+    public List<TurnoDTO> obtenerTurnosDisponiblesPorFecha(LocalDate fecha) {
+        LocalDateTime desde = fecha.atStartOfDay();
+        LocalDateTime hasta = fecha.plusDays(1).atStartOfDay();
+
+        List<Turno> turnos = turnoRepo.findByFechaTurnoBetween(desde, hasta);
+
+        return turnos.stream()
+                .filter(t -> "disponible".equals(t.getEstado()))
+                .map(TurnoDTO::new)
+                .toList();
+    }
+
+    public List<String> obtenerFechasConTurnosDisponibles() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        return turnoRepo.findFechasConTurnosDisponibles().stream()
+                .map(sqlDate -> sqlDate.toLocalDate().format(formatter))
+                .toList();
+    }
+
 
 }

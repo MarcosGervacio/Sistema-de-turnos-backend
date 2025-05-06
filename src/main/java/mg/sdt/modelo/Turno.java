@@ -24,6 +24,7 @@ public class Turno {
     private Servicio servicio;
 
     private LocalDateTime fechaReservada;
+    @Column(name = "fecha_turno")
     private LocalDateTime fechaTurno;
     private String domicilio;
     private String estado;
