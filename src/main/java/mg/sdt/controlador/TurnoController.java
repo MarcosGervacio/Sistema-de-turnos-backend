@@ -83,6 +83,12 @@ public class TurnoController {
         return ResponseEntity.ok("Turno cancelado correctamente.");
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @GetMapping("/usuario/{email}")
+    public ResponseEntity<List<Turno>> turnosPorUsuario(@PathVariable String email) {
+        return ResponseEntity.ok(turnoService.obtenerTurnosPorUsuario(email));
+    }
+
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/disponibles")
@@ -107,5 +113,6 @@ public class TurnoController {
     public List<String> obtenerFechasConTurnos() {
         return turnoService.obtenerFechasConTurnosDisponibles();
     }
+
 
 }

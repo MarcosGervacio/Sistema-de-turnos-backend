@@ -11,6 +11,7 @@ import java.util.List;
 public interface TurnoRepository extends JpaRepository<Turno, Integer> {
     List<Turno> findByEstado(String estado);
     List<Turno> findByUserIdAndEstado(Integer userId, String estado);
+    List<Turno> findByUserEmail(String Email);
     List<Turno> findByFechaTurnoBetween(LocalDateTime desde, LocalDateTime hasta);
     @Query(value = "SELECT DISTINCT DATE(fecha_turno) FROM turno WHERE estado = 'disponible'", nativeQuery = true)
     List<java.sql.Date> findFechasConTurnosDisponibles();

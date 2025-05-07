@@ -146,5 +146,8 @@ public class TurnoService {
                 .toList();
     }
 
+    public List<Turno> obtenerTurnosPorUsuario(String email){
+        return turnoRepo.findByUserEmail(email);
+    }
 
 }
